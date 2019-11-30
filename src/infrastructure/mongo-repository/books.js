@@ -11,8 +11,8 @@ const BookSchema = new Schema({
 const Books = mongoose.model('Books', BookSchema);
 
 module.exports = {
-  findAllBooks() {
-    return Books.find({});
+  findAllBooks(query) {
+    return Books.find(query);
   },
 
   findBookById(bookId) {

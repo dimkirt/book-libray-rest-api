@@ -7,7 +7,16 @@ function createRouter(booksModel) {
   bookRouter.route('/')
     .get(async (req, res) => {
       try {
-        const books = await booksModel.findAllBooks();
+        const query = {};
+        if (req.query.genre) { // This needs sanitization
+          query.genre = req.query.genre;
+        }
+
+        if (req.query.author) { // This needs sanitization
+          query.author = req.query.author;
+        }
+
+        const books = await booksModel.findAllBooks(query);
         res.json(books);
       } catch (error) {
         debug(error);

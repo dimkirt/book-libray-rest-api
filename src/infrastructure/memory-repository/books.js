@@ -10,7 +10,7 @@ const books = [
     id: '2',
     title: 'Zero to One',
     author: 'Peter Thiel',
-    genre: null,
+    genre: 'Business',
   },
   {
     id: '3',
@@ -33,8 +33,15 @@ const books = [
 ];
 
 module.exports = {
-  findAllBooks() {
-    return Promise.resolve(books);
+  findAllBooks(query) {
+    const queryParams = Object.keys(query);
+    const filteredBooks = queryParams.reduce(
+      (booksAcc, filterParam) => booksAcc.filter(
+        (book) => book[filterParam] === query[filterParam],
+      ),
+      books,
+    );
+    return Promise.resolve(filteredBooks);
   },
 
   findBookById(bookId) {

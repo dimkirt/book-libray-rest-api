@@ -1,6 +1,6 @@
 function createBooksModel(db) {
   return {
-    findAllBooks: () => db.Books.findAllBooks(),
+    findAllBooks: (query) => db.Books.findAllBooks(query),
     findBookById: (bookId) => db.Books.findBookById(bookId),
   };
 }
