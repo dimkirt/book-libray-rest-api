@@ -16,7 +16,7 @@ module.exports = {
   },
 
   findBookById(bookId) {
-    return Books.find({ _id: bookId });
+    return Books.findOne({ _id: bookId });
   },
 
   createBook(title, author, genre) {
