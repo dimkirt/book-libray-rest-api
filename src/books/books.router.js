@@ -3,11 +3,11 @@ const express = require('express');
 const _ = require('lodash');
 
 function createSelfLinkOnBook(host, book) {
-  return _.set(book.toJSON(), 'links.self', `http://${host}/api/v1/books/${book._id}`);
+  return _.set(book, 'links.self', `http://${host}/api/v1/books/${book._id}`);
 }
 
 function createGenreFilterLinkOnBook(host, book) {
-  return _.set(book.toJSON(), 'links.filterByThisGenre', `http://${host}/api/v1/books/?genre=${encodeURIComponent(book.genre)}`);
+  return _.set(book, 'links.filterByThisGenre', `http://${host}/api/v1/books/?genre=${encodeURIComponent(book.genre)}`);
 }
 
 function createRouter(booksModel) {
@@ -26,7 +26,7 @@ function createRouter(booksModel) {
 
       const books = await booksModel.findAllBooks(query);
       const booksDto = books.map((book) => createSelfLinkOnBook(req.headers.host, book));
-      res.json(booksDto);
+      res.json({ books: booksDto });
     } catch (error) {
       debug(error);
       res.status(500).send('Internal Server Error');
@@ -35,9 +35,9 @@ function createRouter(booksModel) {
 
   bookRouter.route('/:id').get(async (req, res) => {
     try {
-      const book = await booksModel.findBookById(req.params.id);
+      const book = (await booksModel.findBookById(req.params.id)).toObject();
       const bookDto = createGenreFilterLinkOnBook(req.headers.host, book);
-      res.json(bookDto);
+      res.json({ book: bookDto });
     } catch (error) {
       res.status(500).send('Internal Server Error');
     }
@@ -46,7 +46,8 @@ function createRouter(booksModel) {
   bookRouter.route('/').post(async (req, res) => {
     try {
       const book = await booksModel.createBook(req.body.title, req.body.author, req.body.genre);
-      res.status(201).json(book);
+      const bookDto = createSelfLinkOnBook(req.headers.host, book);
+      res.status(201).json({ book: bookDto });
     } catch (error) {
       debug(error);
       res.status(500).send('Internal Server Error');
@@ -62,7 +63,8 @@ function createRouter(booksModel) {
       };
 
       const book = await booksModel.findOneAndUpdate(req.params.id, updateParams);
-      res.status(200).json(book);
+      const bookDto = createSelfLinkOnBook(req.headers.host, book);
+      res.status(200).json({ book: bookDto });
     } catch (error) {
       debug(error);
       res.status(500).send('Internal Server Error');
@@ -78,7 +80,8 @@ function createRouter(booksModel) {
       };
 
       const book = await booksModel.findOneAndPatch(req.params.id, patchParams);
-      res.status(200).json(book);
+      const bookDto = createSelfLinkOnBook(req.headers.host, book);
+      res.status(200).json({ book: bookDto });
     } catch (error) {
       debug(error);
       res.status(500).send('Internal Server Error');

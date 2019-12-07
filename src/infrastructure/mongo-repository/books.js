@@ -10,13 +10,21 @@ const BookSchema = new Schema({
 
 const Books = mongoose.model('Books', BookSchema);
 
+function removeDocumentVersion(doc) {
+  if ('__v' in doc) {
+    // eslint-disable-next-line no-param-reassign
+    doc.__v = undefined;
+  }
+  return doc;
+}
+
 module.exports = {
   findAllBooks(query) {
-    return Books.find(query);
+    return Books.find(query).then((res) => res.map(removeDocumentVersion));
   },
 
   findBookById(bookId) {
-    return Books.findOne({ _id: bookId });
+    return Books.findOne({ _id: bookId }).then(removeDocumentVersion);
   },
 
   createBook(title, author, genre) {
@@ -24,7 +32,9 @@ module.exports = {
       title,
       author,
       genre,
-    });
+    })
+      .then((res) => res.toObject())
+      .then(removeDocumentVersion);
   },
 
   findOneAndUpdate(bookId, updateBody) {
@@ -32,7 +42,9 @@ module.exports = {
       { _id: bookId },
       updateBody,
       { new: true },
-    );
+    )
+      .then((res) => res.toObject())
+      .then(removeDocumentVersion);
   },
 
   async findOneAndPatch(bookId, patchBody) {
@@ -47,7 +59,10 @@ module.exports = {
       return bookModified;
     }, book);
 
-    return patchedBook.save();
+    return patchedBook
+      .save()
+      .then((res) => res.toObject())
+      .then(removeDocumentVersion);
   },
 
   deleteOneBookById(bookId) {
