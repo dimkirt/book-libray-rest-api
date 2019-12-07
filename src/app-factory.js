@@ -17,7 +17,6 @@ function createApp(db) {
 
   app.use('/', require('./health/index.routers'));
   app.use('/api/v1/books', booksRouter);
-  app.use('/api/v1/authors', require('./authors/authors.router'));
 
   app.use(morgan('tiny')); // combined gives a lot of information
 
