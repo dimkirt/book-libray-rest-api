@@ -1,5 +1,14 @@
 const debug = require('debug')('books');
 const express = require('express');
+const _ = require('lodash');
+
+function createSelfLinkOnBook(host, book) {
+  return _.set(book.toJSON(), 'links.self', `http://${host}/api/v1/books/${book._id}`);
+}
+
+function createGenreFilterLinkOnBook(host, book) {
+  return _.set(book.toJSON(), 'links.filterByThisGenre', `http://${host}/api/v1/books/?genre=${encodeURIComponent(book.genre)}`);
+}
 
 function createRouter(booksModel) {
   const bookRouter = express.Router();
@@ -16,7 +25,8 @@ function createRouter(booksModel) {
       }
 
       const books = await booksModel.findAllBooks(query);
-      res.json(books);
+      const booksDto = books.map((book) => createSelfLinkOnBook(req.headers.host, book));
+      res.json(booksDto);
     } catch (error) {
       debug(error);
       res.status(500).send('Internal Server Error');
@@ -26,7 +36,8 @@ function createRouter(booksModel) {
   bookRouter.route('/:id').get(async (req, res) => {
     try {
       const book = await booksModel.findBookById(req.params.id);
-      res.json(book);
+      const bookDto = createGenreFilterLinkOnBook(req.headers.host, book);
+      res.json(bookDto);
     } catch (error) {
       res.status(500).send('Internal Server Error');
     }
