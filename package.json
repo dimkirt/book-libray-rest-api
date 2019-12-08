@@ -4,8 +4,8 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "DEBUG=app,books,authors nodemon main.js --exec 'node -r dotenv/config'",
+    "test": "node_modules/mocha/bin/mocha ./tests",
+    "start": "DEBUG=app,books nodemon main.js --exec 'node -r dotenv/config'",
     "lint": "eslint app.js --fix"
   },
   "author": "",
@@ -25,7 +25,10 @@
   "devDependencies": {
     "eslint": "6.6.0",
     "eslint-config-airbnb-base": "14.0.0",
-    "eslint-plugin-import": "2.18.2"
+    "eslint-plugin-import": "2.18.2",
+    "mocha": "6.2.2",
+    "should": "13.2.3",
+    "sinon": "7.5.0"
   },
   "nodemonConfig": {
     "restartable": "rs",
