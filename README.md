@@ -1,86 +1,37 @@
-# Full blown web app
+# Library REST API
 
-Handling node versions with nvm https://github.com/nvm-sh/nvm
+API Documentation can be found in this [Postman collection](https://documenter.getpostman.com/view/763923/SWE56yeD?version=latest)
+
+## Node version
+
+Use [nvm](https://github.com/nvm-sh/nvm) to handle different node versions, for this project `v12.3.1` is used.
 
 ```txt
-nvm install 8.9.4
-nvm use 8.9.4
-
-node -v  // 8.9.4
-npm -v  // 5.6.0
-
-nvm install --lts  // install the latest
+nvm install v12.3.1
+nvm use v12.3.1
 ```
 
-The `^` locks the first version ^4.17.1
-The `~` locks the first and second version ~4.17.1
-If you don't add a character it's a specific version
+## Installation
 
-The npm config file
-
-https://docs.npmjs.com/files/npmrc
-
-Put this in the `~/.npmrc` file:
-
-```txt
-progress=false
-save=true
-save-exact=true
+```bash
+npm install
 ```
 
-## Debugging tools
+## Run tests
 
-chalk allow us to easily color parts of a console log.
-debug logging: https://www.npmjs.com/package/debug
-debug will only log something if you run in debug mode
-`DEBUG=* node app.js` to show everything
-`DEBUG=app node app.js` to show your app
-
-Morgan to log requests: https://www.npmjs.com/package/morgan
-Note: Check this out http://tostring.it/2014/06/23/advanced-logging-with-nodejs/
-
-## Linting
-
-To generate the `.eslintrc.js` install `eslint` and then `./node_modules/eslint/bin/eslint.js --init`.
-
-Styleguide: https://github.com/airbnb/javascript
-
-## MS SQL database with Microsoft Azure
-
-To create the db:
-
-```txt
-CREATE TABLE books (id int, title varchar(255), author varchar(255));
+```bash
+npm test
 ```
 
-Insert data:
+## Environment Variables
+
+Create a `.env` file in the root of the project with the following:
 
 ```txt
-INSERT INTO books (id, title, author) VALUES
-(1, 'Flow', 'Mihaly Csikszentmihalyi'),
-(2, 'Zero to One', 'Peter Thiel'),
-(3, 'Outliers', 'Malcolm Gladwell'),
-(4, 'The 7 Habits of Highly Effective People', 'Stephen Covey'),
-(5, 'The Power of Habit', 'Charles Duhigg'),
-```
-
-Altering tables:
-
-```txt
-ALTER TABLE books
-ADD genre varchar(255)
-```
-
-Delete Data:
-
-```txt
-DELETE from books WHERE author = 'Alan Watts'
-```
-
-Query:
-
-```txt
-select * from books
+NODE_ENV = "development"
+# NODE_ENV = "test"
+PORT = 3001
+MONGO_URI = "mongodb://localhost:27017/library-rest-api"
 ```
 
 ## MongoDB database
@@ -108,27 +59,35 @@ db.books.insertMany([
   {
     title: 'Flow',
     author: 'Mihaly Csikszentmihalyi',
-    genre: null,
+    genre: 'Self Help Book',
   },
   {
     title: 'Zero to One',
     author: 'Peter Thiel',
-    genre: null,
+    genre: 'Business',
   },
   {
     title: 'Outliers',
     author: 'Malcolm Gladwell',
-    genre: null,
+    genre: 'Psychology',
   },
   {
     title: 'The 7 Habits of Highly Effective People',
     author: 'Stephen Covey',
-    genre: null,
+    genre: 'Self Help Book',
   },
   {
     title: 'The Power of Habit',
     author: 'Charles Duhigg',
-    genre: null,
+    genre: 'Self Help Book',
   },
 ]);
+```
+
+## Run the app locally
+
+It will start the app locally using nodemon:
+
+```bash
+npm start
 ```
