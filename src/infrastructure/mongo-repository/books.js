@@ -20,11 +20,15 @@ function removeDocumentVersion(doc) {
 
 module.exports = {
   findAllBooks(query) {
-    return Books.find(query).then((res) => res.map(removeDocumentVersion));
+    return Books.find(query)
+      .then((res) => res.map((el) => el.toObject()))
+      .then((res) => res.map(removeDocumentVersion));
   },
 
   findBookById(bookId) {
-    return Books.findOne({ _id: bookId }).then(removeDocumentVersion);
+    return Books.findOne({ _id: bookId })
+      .then((res) => res.toObject())
+      .then(removeDocumentVersion);
   },
 
   createBook(title, author, genre) {
